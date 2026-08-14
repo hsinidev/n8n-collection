@@ -1,0 +1,128 @@
+{
+  "id": "wflow_b44c56951b",
+  "name": "CrowdStrike Endpoint Detection Escalation - Enterprise Suite #6688",
+  "meta": {
+    "instanceId": "inst-eddfa696",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:39.033632+00:00",
+    "updatedAt": "2026-08-14T17:32:39.033632+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cybersecurity",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cybersecurity",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "8a94549c-9c09-41eb-a183-ad919d9c66a6",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        245
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "6e148f10-129b-4eae-8448-b404862c608f",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        360
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a3a8b018-bc94-458b-99c4-4131a28be10f",
+      "name": "Pagerduty (3)",
+      "type": "n8n-nodes-base.pagerDuty",
+      "typeVersion": 1,
+      "position": [
+        760,
+        330
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 3 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e2c13c2a-98ea-4777-a370-b7c27a2b932d",
+      "name": "Jira (4)",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        250
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 4 for CyberSecurity workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "Pagerduty (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pagerduty (3)": {
+      "main": [
+        [
+          {
+            "node": "Jira (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

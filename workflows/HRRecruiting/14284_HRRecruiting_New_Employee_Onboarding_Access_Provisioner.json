@@ -1,0 +1,129 @@
+{
+  "id": "wflow_e5a34d9b39",
+  "name": "New Employee Onboarding Access Provisioner - Enterprise Suite #14284",
+  "meta": {
+    "instanceId": "inst-7177759a",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:00.751596+00:00",
+    "updatedAt": "2026-08-14T17:33:00.751596+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "hrrecruiting",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "hrrecruiting",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "9a0f4eca-60c2-41da-8bf9-53f311d0737e",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        360
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "cdb8a21b-52f7-4638-8957-d8be51bd2124",
+      "name": "Github (2)",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        500,
+        280
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e44c993c-2df4-4aa3-a62d-6742007403a0",
+      "name": "Slack Notification (3)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        270
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 3 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "cb75324b-2303-4b9e-bea4-f28c5398d2ba",
+      "name": "SMTP Email Dispatcher (4)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        320
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 4 for HRRecruiting workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Github (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github (2)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (3)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

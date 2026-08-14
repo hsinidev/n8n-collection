@@ -1,0 +1,129 @@
+{
+  "id": "wflow_c9a6e317bc",
+  "name": "HIPAA Compliant Patient Intake Storage - Enterprise Suite #12664",
+  "meta": {
+    "instanceId": "inst-91e1f559",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:52.873152+00:00",
+    "updatedAt": "2026-08-14T17:32:52.873152+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "healthtech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "healthtech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "c0540fb7-7051-4d74-b22e-bd8898c21d62",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        370
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "30a7de54-e8f4-4fd5-8b76-8a2fa3de4ce4",
+      "name": "Crypto (2)",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        500,
+        230
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "22226322-5ef1-4832-8418-3d55364c8c43",
+      "name": "Postgres Data Sync (3)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        760,
+        235
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 3 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "301036be-81c7-42bf-a8a7-4dbb061c5d22",
+      "name": "SMTP Email Dispatcher (4)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        275
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 4 for HealthTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Crypto (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto (2)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (3)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

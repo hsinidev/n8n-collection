@@ -1,0 +1,131 @@
+{
+  "id": "wflow_7087c3a0ce",
+  "name": "Prescription Refill Automated Pharmacy Dispatch - Enterprise Suite #12365",
+  "meta": {
+    "instanceId": "inst-74b929d4",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:52.274258+00:00",
+    "updatedAt": "2026-08-14T17:32:52.274258+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "healthtech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "healthtech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "22ee6253-f746-422a-843a-d03b01637891",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        235
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "86a99eae-8286-469e-ab5c-85696668d373",
+      "name": "Postgres Data Sync (2)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        500,
+        265
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 2 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c9f1ca43-d653-4a56-ab26-afb60cc0092f",
+      "name": "SMTP Email Dispatcher (3)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        760,
+        295
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 3 for HealthTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "0a8f2996-dbbd-42b9-82b3-fafbe341b351",
+      "name": "Twilio SMS Dispatcher (4)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        335
+      ],
+      "parameters": {
+        "message": "=Alert: {{ $json.alert || 'System notification' }}"
+      },
+      "notes": "Automated enterprise step 4 for HealthTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (2)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMTP Email Dispatcher (3)": {
+      "main": [
+        [
+          {
+            "node": "Twilio SMS Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

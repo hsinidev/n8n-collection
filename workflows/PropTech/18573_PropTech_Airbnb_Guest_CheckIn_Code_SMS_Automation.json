@@ -1,0 +1,104 @@
+{
+  "id": "wflow_bae7b79aaf",
+  "name": "Airbnb Guest CheckIn Code SMS Automation - Enterprise Suite #18573",
+  "meta": {
+    "instanceId": "inst-7b0d22ef",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:27.024442+00:00",
+    "updatedAt": "2026-08-14T17:33:27.024442+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "proptech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "proptech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "5589df03-666a-4f3f-b4de-4547a920e313",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        265
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for PropTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "96a90ba9-dbd9-4ba9-9e9c-64a3edabf840",
+      "name": "Twilio SMS Dispatcher (2)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        375
+      ],
+      "parameters": {
+        "message": "=Alert: {{ $json.alert || 'System notification' }}"
+      },
+      "notes": "Automated enterprise step 2 for PropTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a3da52bb-81fc-4fc7-a1b8-8e503358e01f",
+      "name": "Postgres Data Sync (3)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        760,
+        290
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 3 for PropTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Twilio SMS Dispatcher (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio SMS Dispatcher (2)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

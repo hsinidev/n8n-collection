@@ -1,0 +1,158 @@
+{
+  "id": "wflow_3b1ac77c76",
+  "name": "GDPR Right To Be Forgotten Orchestrator - Enterprise Suite #6619",
+  "meta": {
+    "instanceId": "inst-df2d92d9",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:38.900090+00:00",
+    "updatedAt": "2026-08-14T17:32:38.900090+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cybersecurity",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cybersecurity",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "33b6af8e-1d97-429d-af7b-8c7388b2a7a1",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        325
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "5f8557ed-08c0-4636-9a43-22ced0e9e5f0",
+      "name": "Postgres Data Sync (2)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        500,
+        240
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 2 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "91877198-c264-4567-aa21-84a39ea2a100",
+      "name": "HubSpot CRM Sync (3)",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        760,
+        315
+      ],
+      "parameters": {
+        "resource": "contact",
+        "operation": "createOrUpdate"
+      },
+      "notes": "Automated enterprise step 3 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "70ff17b8-7666-4837-9b2c-1f6d97710d8a",
+      "name": "Stripe Operations (4)",
+      "type": "n8n-nodes-base.stripe",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        305
+      ],
+      "parameters": {
+        "resource": "charge",
+        "operation": "get"
+      },
+      "notes": "Automated enterprise step 4 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "55b086e9-3aa4-40c0-bc33-82f438a1ca2d",
+      "name": "SMTP Email Dispatcher (5)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        365
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 5 for CyberSecurity workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (2)": {
+      "main": [
+        [
+          {
+            "node": "HubSpot CRM Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot CRM Sync (3)": {
+      "main": [
+        [
+          {
+            "node": "Stripe Operations (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Operations (4)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (5)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

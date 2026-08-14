@@ -1,0 +1,138 @@
+{
+  "id": "wflow_cf984410c9",
+  "name": "Wise Multi Currency FX Hedging Alert - Enterprise Suite #4651",
+  "meta": {
+    "instanceId": "inst-5e65f081",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:34.965910+00:00",
+    "updatedAt": "2026-08-14T17:32:34.965910+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "fintech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "fintech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "6976439e-db16-4d5a-aca0-a2d123e7569e",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        305
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "85474f51-5194-4842-8270-d9b9c9379ad5",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        370
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "35fb7397-1529-47af-98fc-8ceb22703d8b",
+      "name": "JavaScript Logic Engine (3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        255
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 3 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a2a9b583-0ea6-470c-b127-91dcb48422e3",
+      "name": "Telegram Bot Dispatcher (4)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        370
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 4 for FinTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

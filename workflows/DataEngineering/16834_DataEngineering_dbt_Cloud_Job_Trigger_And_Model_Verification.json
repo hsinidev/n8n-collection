@@ -1,0 +1,108 @@
+{
+  "id": "wflow_61f7c593bc",
+  "name": "dbt Cloud Job Trigger And Model Verification - Enterprise Suite #16834",
+  "meta": {
+    "instanceId": "inst-b3551578",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:17.818543+00:00",
+    "updatedAt": "2026-08-14T17:33:17.818543+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "dataengineering",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "dataengineering",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "c23f746f-63f8-4849-9845-4a3544389e12",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        240
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for DataEngineering workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "8224fcd0-9992-4b8a-b570-b33c43cbf13c",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        320
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for DataEngineering workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "964496ae-f808-43bb-9892-ebdca4743dee",
+      "name": "Slack Notification (3)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        250
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 3 for DataEngineering workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "id": "wflow_44d704c819",
+  "name": "Multimodal Document Extractor Vision - Enterprise Suite #2940",
+  "meta": {
+    "instanceId": "inst-f8de005f",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:32.303160+00:00",
+    "updatedAt": "2026-08-14T17:32:32.303160+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "aiagents",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "aiagents",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "5db6a292-ddde-45fc-be89-56ff2f51c8a1",
+      "name": "Googledrivetrigger (1)",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        305
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "d83d949f-e357-4c20-aedc-17e9124108b3",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        275
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "651550a9-ddad-42f0-9ce7-c135638fc893",
+      "name": "Postgres Data Sync (3)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        760,
+        230
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 3 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "af91929d-43b4-4c94-9bb4-64a6f584ef54",
+      "name": "Google Sheets Logger (4)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1020,
+        325
+      ],
+      "parameters": {
+        "operation": "append",
+        "sheetName": "Logs",
+        "dataMode": "autoMapInputData"
+      },
+      "notes": "Automated enterprise step 4 for AIAgents workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Googledrivetrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (3)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

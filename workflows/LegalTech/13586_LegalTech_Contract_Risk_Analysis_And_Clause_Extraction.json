@@ -1,0 +1,135 @@
+{
+  "id": "wflow_7307ecb38e",
+  "name": "Contract Risk Analysis And Clause Extraction - Enterprise Suite #13586",
+  "meta": {
+    "instanceId": "inst-d86e5b5b",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:56.572446+00:00",
+    "updatedAt": "2026-08-14T17:32:56.572446+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "legaltech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "legaltech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "c241ae41-249f-42c1-86ac-ff81736a8964",
+      "name": "Googledrivetrigger (1)",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        315
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "18476b2d-38a4-4578-bff2-6e1d4c737776",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        250
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "8901e2c2-5fe2-4750-b947-50caefde3d6f",
+      "name": "Postgres Data Sync (3)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        760,
+        375
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 3 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "2df87bd3-8eac-4e55-a10e-4a360d6d556b",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        320
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for LegalTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Googledrivetrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

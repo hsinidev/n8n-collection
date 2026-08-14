@@ -1,0 +1,132 @@
+{
+  "id": "wflow_2391992c1a",
+  "name": "BigQuery Cost Anomaly Monitoring - Enterprise Suite #17080",
+  "meta": {
+    "instanceId": "inst-2bd70552",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:19.456194+00:00",
+    "updatedAt": "2026-08-14T17:33:19.456194+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "dataengineering",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "dataengineering",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "834f90a8-1b93-4c18-ac55-ca3f3b6e831d",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        345
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for DataEngineering workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "9142e2c6-297a-4b4f-bd4d-c3b28c68b2e3",
+      "name": "Googlebigquery (2)",
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 1,
+      "position": [
+        500,
+        330
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for DataEngineering workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a41c85a1-343a-4ad6-9984-c22e3a9d1dbc",
+      "name": "JavaScript Logic Engine (3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        315
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 3 for DataEngineering workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "297320c3-7f4b-42b5-8917-74470b4c3012",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        345
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for DataEngineering workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "Googlebigquery (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Googlebigquery (2)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

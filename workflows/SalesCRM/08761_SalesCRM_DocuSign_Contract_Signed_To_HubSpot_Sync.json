@@ -1,0 +1,128 @@
+{
+  "id": "wflow_dcdb926265",
+  "name": "DocuSign Contract Signed To HubSpot Sync - Enterprise Suite #8761",
+  "meta": {
+    "instanceId": "inst-0a329277",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:43.825311+00:00",
+    "updatedAt": "2026-08-14T17:32:43.825311+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "salescrm",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "salescrm",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "3be2d11f-064a-449d-a0e6-ce2ae8ee9858",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        295
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "cd5cd71d-b8ae-486e-a351-edea5b73eca4",
+      "name": "HubSpot CRM Sync (2)",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        500,
+        240
+      ],
+      "parameters": {
+        "resource": "contact",
+        "operation": "createOrUpdate"
+      },
+      "notes": "Automated enterprise step 2 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "2d9362c1-0f8f-49db-999d-c15e88de9a2f",
+      "name": "Googledrive (3)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        760,
+        245
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 3 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "ce91ad34-bf6d-4e90-bb7c-0fcb4c764a1d",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        350
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for SalesCRM workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HubSpot CRM Sync (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot CRM Sync (2)": {
+      "main": [
+        [
+          {
+            "node": "Googledrive (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Googledrive (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

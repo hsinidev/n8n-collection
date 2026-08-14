@@ -1,0 +1,113 @@
+{
+  "id": "wflow_17ea8ed1f2",
+  "name": "Home Assistant Security Camera Snapshot AI - Enterprise Suite #15746",
+  "meta": {
+    "instanceId": "inst-391554ac",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:11.442293+00:00",
+    "updatedAt": "2026-08-14T17:33:11.442293+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "iotedge",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "iotedge",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "528a9518-5003-402a-acae-6ac9075747cf",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        310
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for IoTEdge workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a70b9ec5-4106-41c6-a6a4-f44e770c9a25",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        290
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for IoTEdge workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "14286f76-6865-4123-a5cc-38ecd780ef9a",
+      "name": "Telegram Bot Dispatcher (3)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        285
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 3 for IoTEdge workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

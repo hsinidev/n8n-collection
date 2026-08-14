@@ -1,0 +1,163 @@
+{
+  "id": "wflow_4ec091760d",
+  "name": "Ethereum Whale Transaction Watcher - Enterprise Suite #6077",
+  "meta": {
+    "instanceId": "inst-f102b15c",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:37.641536+00:00",
+    "updatedAt": "2026-08-14T17:32:37.641536+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cryptoweb3",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cryptoweb3",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "4184596d-a163-456d-8830-95822f4c9909",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        295
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "688ca069-52a6-4dbf-a668-42594f4ac704",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c6af0ad2-1c04-4a28-910d-ed7ba56b0a57",
+      "name": "JavaScript Logic Engine (3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        310
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 3 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "ed5443da-fded-43ec-8695-af8ed1d89fd0",
+      "name": "Telegram Bot Dispatcher (4)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        305
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 4 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "3ed26c26-c4f0-425d-81ef-bcace26107ea",
+      "name": "Discord Webhook Alert (5)",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        250
+      ],
+      "parameters": {
+        "content": "=\ud83d\udd14 Enterprise Notification: {{ $json.summary || 'Pipeline OK' }}"
+      },
+      "notes": "Automated enterprise step 5 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Bot Dispatcher (4)": {
+      "main": [
+        [
+          {
+            "node": "Discord Webhook Alert (5)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

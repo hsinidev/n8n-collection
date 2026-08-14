@@ -1,0 +1,102 @@
+{
+  "id": "wflow_ae15eba383",
+  "name": "Warehouse Inventory Barcode Scan Sync - Enterprise Suite #9702",
+  "meta": {
+    "instanceId": "inst-a0132963",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:45.597719+00:00",
+    "updatedAt": "2026-08-14T17:32:45.597719+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "ecommercelogistics",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "ecommercelogistics",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "b2600d27-16fa-4ba7-9d3c-95969aca535c",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        240
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "23902e3c-e556-4bea-86f9-792fa7be21d8",
+      "name": "Postgres Data Sync (2)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        500,
+        260
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 2 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e6b6f4b8-e376-4052-8008-048c98940d1b",
+      "name": "Shopify (3)",
+      "type": "n8n-nodes-base.shopify",
+      "typeVersion": 1,
+      "position": [
+        760,
+        320
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 3 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Data Sync (2)": {
+      "main": [
+        [
+          {
+            "node": "Shopify (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

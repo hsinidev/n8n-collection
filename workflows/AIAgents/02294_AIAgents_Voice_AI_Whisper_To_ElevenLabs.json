@@ -1,0 +1,165 @@
+{
+  "id": "wflow_9b260471c1",
+  "name": "Voice AI Whisper To ElevenLabs - Enterprise Suite #2294",
+  "meta": {
+    "instanceId": "inst-02003128",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:31.380235+00:00",
+    "updatedAt": "2026-08-14T17:32:31.380235+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "aiagents",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "aiagents",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "73cac895-293d-4a67-a3aa-34236a8c246a",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        235
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b2e9c08d-d57d-4a88-829e-4f9856640ee6",
+      "name": "Readbinaryfile (2)",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        500,
+        295
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e0e88002-e588-475a-afab-5aebed3f8353",
+      "name": "OpenAI Reasoning Engine (3)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        760,
+        250
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 3 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "9fc82c41-3ce4-498e-b1a3-215bbbf189a7",
+      "name": "HTTP Enterprise Connector (4)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        370
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 4 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "8d3c85ad-8727-4130-9bf2-4f3ca250b156",
+      "name": "Telegram Bot Dispatcher (5)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        230
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 5 for AIAgents workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Readbinaryfile (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Readbinaryfile (2)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (4)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (5)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

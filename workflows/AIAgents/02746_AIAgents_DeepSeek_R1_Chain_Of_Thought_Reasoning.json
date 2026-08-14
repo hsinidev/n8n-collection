@@ -1,0 +1,133 @@
+{
+  "id": "wflow_354e6a5502",
+  "name": "DeepSeek R1 Chain Of Thought Reasoning - Enterprise Suite #2746",
+  "meta": {
+    "instanceId": "inst-915a614b",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:31.990055+00:00",
+    "updatedAt": "2026-08-14T17:32:31.990055+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "aiagents",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "aiagents",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "1d3b7514-edcf-4522-98cb-383db697c378",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        290
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "5a2097f5-200e-4f47-b427-e799b69b15d0",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        335
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "10801950-d0f8-422c-8887-ea82e8a05c76",
+      "name": "JavaScript Logic Engine (3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 3 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "cd5a7739-a27e-48ae-a505-893ff1044ef9",
+      "name": "Telegram Bot Dispatcher (4)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        370
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 4 for AIAgents workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "id": "wflow_637efb6646",
+  "name": "WooCommerce Low Stock Supplier Reorder - Enterprise Suite #10717",
+  "meta": {
+    "instanceId": "inst-5a44c187",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:48.862354+00:00",
+    "updatedAt": "2026-08-14T17:32:48.862354+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "ecommercelogistics",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "ecommercelogistics",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "83380bc8-5ece-4316-b6cf-54a033648b22",
+      "name": "Woocommercetrigger (1)",
+      "type": "n8n-nodes-base.woocommerceTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        365
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "ef9fdb98-2f4d-4651-89a4-8a573b271682",
+      "name": "JavaScript Logic Engine (2)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        250
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 2 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "4659ada2-3762-468d-9348-f30203b1f959",
+      "name": "SMTP Email Dispatcher (3)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        760,
+        335
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 3 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "aa318ab9-267d-4d2e-b664-e898bccb64bb",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        245
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Woocommercetrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMTP Email Dispatcher (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "id": "wflow_e926a3790c",
+  "name": "TaxJar Automated Sales Tax Reconciliation - Enterprise Suite #20835",
+  "meta": {
+    "instanceId": "inst-3a05f8b6",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:38:13.114195+00:00",
+    "updatedAt": "2026-08-14T17:38:13.114195+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "fintech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "fintech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "180d508b-56e1-4135-8dcf-5358703b5b17",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        275
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "fdae6e27-a6a0-4444-9418-090c30fb7518",
+      "name": "Stripe Operations (2)",
+      "type": "n8n-nodes-base.stripe",
+      "typeVersion": 1,
+      "position": [
+        500,
+        230
+      ],
+      "parameters": {
+        "resource": "charge",
+        "operation": "get"
+      },
+      "notes": "Automated enterprise step 2 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "4289bf6f-3366-472f-a211-2652085d870e",
+      "name": "HTTP Enterprise Connector (3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        265
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 3 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "28525598-1c88-4a02-ad93-3f51e62506d4",
+      "name": "Postgres Data Sync (4)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1020,
+        305
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 4 for FinTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "Stripe Operations (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Operations (2)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (3)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

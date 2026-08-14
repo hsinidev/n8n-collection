@@ -1,0 +1,111 @@
+{
+  "id": "wflow_e08f93a07c",
+  "name": "Employee Quarterly Feedback Survey Bot - Enterprise Suite #14057",
+  "meta": {
+    "instanceId": "inst-d9961702",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:59.260808+00:00",
+    "updatedAt": "2026-08-14T17:32:59.260808+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "hrrecruiting",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "hrrecruiting",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "975db9ba-8739-4cc0-8ae2-e6f2b3f46bf3",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        235
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e51bc9dd-201b-4665-8463-ce681bc10132",
+      "name": "Slack Notification (2)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        370
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 2 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c44289b9-d12d-48ba-a1d2-d93dad1957a6",
+      "name": "Google Sheets Logger (3)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        335
+      ],
+      "parameters": {
+        "operation": "append",
+        "sheetName": "Logs",
+        "dataMode": "autoMapInputData"
+      },
+      "notes": "Automated enterprise step 3 for HRRecruiting workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (2)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

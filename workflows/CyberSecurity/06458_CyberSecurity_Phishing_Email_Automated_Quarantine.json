@@ -1,0 +1,132 @@
+{
+  "id": "wflow_b4ad049575",
+  "name": "Phishing Email Automated Quarantine - Enterprise Suite #6458",
+  "meta": {
+    "instanceId": "inst-58cff4b5",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:38.515552+00:00",
+    "updatedAt": "2026-08-14T17:32:38.515552+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cybersecurity",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cybersecurity",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "166d0ae8-a91d-4f3c-8da0-07775cb5010d",
+      "name": "Emailreadimap (1)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [
+        240,
+        225
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "27a13324-fc4f-4c52-b98a-6dc75b59d154",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        315
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "575193c5-cd0d-46a5-9f67-27c2257bf1b5",
+      "name": "Slack Notification (3)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        260
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 3 for CyberSecurity workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b076ab4d-1cad-4140-a726-c853c14fa361",
+      "name": "Microsoftoutlook (4)",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        305
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 4 for CyberSecurity workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Emailreadimap (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (3)": {
+      "main": [
+        [
+          {
+            "node": "Microsoftoutlook (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

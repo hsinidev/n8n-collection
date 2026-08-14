@@ -1,0 +1,108 @@
+{
+  "id": "wflow_07206ef9a3",
+  "name": "Workday Timeoff Request Slack Approval - Enterprise Suite #14514",
+  "meta": {
+    "instanceId": "inst-e8136dc8",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:02.159150+00:00",
+    "updatedAt": "2026-08-14T17:33:02.159150+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "hrrecruiting",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "hrrecruiting",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "b9c83d8c-4273-4817-ae34-bd4613a941d2",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        290
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "f27287d8-087c-47c1-a300-787f6d46958a",
+      "name": "Slack Notification (2)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        370
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 2 for HRRecruiting workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "2a344645-0cd4-4436-9ac9-6153fbf1eaf4",
+      "name": "HTTP Enterprise Connector (3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        320
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 3 for HRRecruiting workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (2)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

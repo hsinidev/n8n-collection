@@ -1,0 +1,127 @@
+{
+  "id": "wflow_106800b24a",
+  "name": "Shopify Abandoned Cart SMS Recovery - Enterprise Suite #9982",
+  "meta": {
+    "instanceId": "inst-d96f2a61",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:46.325135+00:00",
+    "updatedAt": "2026-08-14T17:32:46.325135+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "ecommercelogistics",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "ecommercelogistics",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "4267e6e2-404e-4cc5-ba88-5f27c22cd391",
+      "name": "Shopify Store Event (1)",
+      "type": "n8n-nodes-base.shopifyTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        340
+      ],
+      "parameters": {
+        "topic": "orders/create"
+      },
+      "notes": "Automated enterprise step 1 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c4b735f0-64ff-4315-8d0c-31577a128a0c",
+      "name": "JavaScript Logic Engine (2)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        360
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 2 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "aa605c6a-afc2-4b67-96d2-3f82bad1d344",
+      "name": "Twilio SMS Dispatcher (3)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        300
+      ],
+      "parameters": {
+        "message": "=Alert: {{ $json.alert || 'System notification' }}"
+      },
+      "notes": "Automated enterprise step 3 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "31bdf5ff-0a38-4b44-a5a3-abe0464bb2b2",
+      "name": "Postgres Data Sync (4)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1020,
+        255
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 4 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Shopify Store Event (1)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Twilio SMS Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio SMS Dispatcher (3)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

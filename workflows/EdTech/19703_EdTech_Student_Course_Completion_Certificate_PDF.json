@@ -1,0 +1,132 @@
+{
+  "id": "wflow_7fe9190132",
+  "name": "Student Course Completion Certificate PDF - Enterprise Suite #19703",
+  "meta": {
+    "instanceId": "inst-a2545423",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:33:32.598305+00:00",
+    "updatedAt": "2026-08-14T17:33:32.598305+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "edtech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "edtech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "931c32c7-b043-409c-904f-10781404a89f",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        295
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for EdTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "32bf6f97-5d8d-4c64-8b29-599996d613ec",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        355
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for EdTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "617f2b21-0184-4cfa-9788-9193d79c4e7b",
+      "name": "SMTP Email Dispatcher (3)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        760,
+        360
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 3 for EdTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "5a51a281-ae6a-4284-b2a0-24fdecfdcdff",
+      "name": "Googledrive (4)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        355
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 4 for EdTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMTP Email Dispatcher (3)": {
+      "main": [
+        [
+          {
+            "node": "Googledrive (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

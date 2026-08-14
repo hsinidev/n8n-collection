@@ -1,0 +1,104 @@
+{
+  "id": "wflow_7c68cd10f3",
+  "name": "ShipStation Tracking Status Customer Notification - Enterprise Suite #9675",
+  "meta": {
+    "instanceId": "inst-84674b08",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:45.551506+00:00",
+    "updatedAt": "2026-08-14T17:32:45.551506+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "ecommercelogistics",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "ecommercelogistics",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "10635756-8458-4d6f-90d7-d0f4f2cfa6b3",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        325
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c56ba1d5-ef00-4081-80db-8a4ceffef2eb",
+      "name": "Twilio SMS Dispatcher (2)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        265
+      ],
+      "parameters": {
+        "message": "=Alert: {{ $json.alert || 'System notification' }}"
+      },
+      "notes": "Automated enterprise step 2 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "13e4ef21-f88c-49dc-a081-81e4f42bb5dd",
+      "name": "Postgres Data Sync (3)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        760,
+        335
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO enterprise_events (payload, executed_at) VALUES ('{{ JSON.stringify($json) }}', NOW());"
+      },
+      "notes": "Automated enterprise step 3 for ECommerceLogistics workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Twilio SMS Dispatcher (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio SMS Dispatcher (2)": {
+      "main": [
+        [
+          {
+            "node": "Postgres Data Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

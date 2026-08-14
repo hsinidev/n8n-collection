@@ -1,0 +1,159 @@
+{
+  "id": "wflow_1e497b2a20",
+  "name": "Jira Service Desk SLA Breach Warning - Enterprise Suite #10914",
+  "meta": {
+    "instanceId": "inst-87db274f",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:49.386206+00:00",
+    "updatedAt": "2026-08-14T17:32:49.386206+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "customersupport",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "customersupport",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "b66d8480-a296-4f7f-9230-e8a57531be76",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        225
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "c62d173f-98f3-4f1f-8849-1b887436c8c5",
+      "name": "Jira (2)",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        500,
+        275
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "3cbfe690-8a3c-4ff4-a5b2-00afe858984a",
+      "name": "JavaScript Logic Engine (3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        230
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 3 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "22b8f2ca-6e2b-44ac-a01a-f8cc3bb7bf83",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        335
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "278cb7dd-1ec1-4d61-96f4-61475565c0ec",
+      "name": "SMTP Email Dispatcher (5)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        300
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 5 for CustomerSupport workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "Jira (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira (2)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (4)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (5)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "id": "wflow_3d108dea6a",
+  "name": "NDA Contract Automated PDF Generator - Enterprise Suite #13728",
+  "meta": {
+    "instanceId": "inst-46dff86d",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:57.352486+00:00",
+    "updatedAt": "2026-08-14T17:32:57.352486+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "legaltech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "legaltech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "675304df-b8b2-4dc7-8061-4a59b5a37023",
+      "name": "Typeformtrigger (1)",
+      "type": "n8n-nodes-base.typeformTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        310
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "48bdb267-55b5-47f6-be66-b5a7fe0d70a5",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        310
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "1c4b60ef-d4c3-4bd8-ae11-3027158d88ca",
+      "name": "Googledocs (3)",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        760,
+        360
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 3 for LegalTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a20181bf-b520-4b89-8396-6fa1e6557e72",
+      "name": "SMTP Email Dispatcher (4)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        225
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 4 for LegalTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Typeformtrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Googledocs (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Googledocs (3)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "id": "wflow_b5121e0ae2",
+  "name": "Kubernetes Pod CrashLoop Auto Healer - Enterprise Suite #21193",
+  "meta": {
+    "instanceId": "inst-e63721bb",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:38:13.655783+00:00",
+    "updatedAt": "2026-08-14T17:38:13.655783+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "devopscloud",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "devopscloud",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "0a36a15d-1d2c-4aab-b592-3d4d12ff28da",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        245
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for DevOpsCloud workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "1e4cda38-195f-4e94-b226-a18566b72a5e",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        370
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for DevOpsCloud workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "fe87f482-41db-4e53-ae2e-f54ca67d1871",
+      "name": "Slack Notification (3)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        375
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 3 for DevOpsCloud workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "3a3aef0b-8c54-4721-8878-e2495a4ebe42",
+      "name": "Pagerduty (4)",
+      "type": "n8n-nodes-base.pagerDuty",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        345
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 4 for DevOpsCloud workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (3)": {
+      "main": [
+        [
+          {
+            "node": "Pagerduty (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

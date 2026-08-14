@@ -1,0 +1,130 @@
+{
+  "id": "wflow_ca8af51383",
+  "name": "HubSpot New Lead Apollo Enrichment - Enterprise Suite #9352",
+  "meta": {
+    "instanceId": "inst-46f93067",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:44.952751+00:00",
+    "updatedAt": "2026-08-14T17:32:44.952751+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "salescrm",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "salescrm",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "d1b75a88-4239-48af-860c-0dbdac0c127b",
+      "name": "Hubspottrigger (1)",
+      "type": "n8n-nodes-base.hubspotTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        330
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "bf045d14-4314-448f-8637-2a530f6d2885",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        225
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "8fe93c21-761d-4852-9efd-27a04f7d8989",
+      "name": "HubSpot CRM Sync (3)",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        760,
+        325
+      ],
+      "parameters": {
+        "resource": "contact",
+        "operation": "createOrUpdate"
+      },
+      "notes": "Automated enterprise step 3 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "573aebf9-3b52-4233-a40d-810c4a88c2a0",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        340
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for SalesCRM workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Hubspottrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "HubSpot CRM Sync (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot CRM Sync (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

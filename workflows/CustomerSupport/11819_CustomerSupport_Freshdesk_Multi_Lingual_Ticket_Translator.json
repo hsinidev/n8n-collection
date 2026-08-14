@@ -1,0 +1,105 @@
+{
+  "id": "wflow_a7c1550ed5",
+  "name": "Freshdesk Multi Lingual Ticket Translator - Enterprise Suite #11819",
+  "meta": {
+    "instanceId": "inst-309109c6",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:51.221541+00:00",
+    "updatedAt": "2026-08-14T17:32:51.221541+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "customersupport",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "customersupport",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "3eeaf503-d865-4699-8fab-e0b5ee7d9b09",
+      "name": "Webhook Trigger (1)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        265
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ingress",
+        "responseMode": "responseNode"
+      },
+      "notes": "Automated enterprise step 1 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "1fb04c2c-1e2d-4761-859f-24257a577aec",
+      "name": "Googletranslate (2)",
+      "type": "n8n-nodes-base.googleTranslate",
+      "typeVersion": 1,
+      "position": [
+        500,
+        325
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "eebb5f08-8b0d-4b02-a41f-a226f4eb733f",
+      "name": "HTTP Enterprise Connector (3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        355
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 3 for CustomerSupport workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Googletranslate (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Googletranslate (2)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

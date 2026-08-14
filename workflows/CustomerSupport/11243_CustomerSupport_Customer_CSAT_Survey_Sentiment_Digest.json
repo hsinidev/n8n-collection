@@ -1,0 +1,136 @@
+{
+  "id": "wflow_c61fd9cc83",
+  "name": "Customer CSAT Survey Sentiment Digest - Enterprise Suite #11243",
+  "meta": {
+    "instanceId": "inst-314b7a05",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:50.072619+00:00",
+    "updatedAt": "2026-08-14T17:32:50.072619+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "customersupport",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "customersupport",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "1fb6d141-8837-4746-8f5c-bf7e2d97ca4c",
+      "name": "Typeformtrigger (1)",
+      "type": "n8n-nodes-base.typeformTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        290
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "640ec5a7-6f59-4d5c-8014-9ced8444ebbb",
+      "name": "OpenAI Reasoning Engine (2)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        360
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 2 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "f247479e-173d-44fc-9c8e-1e466fafc9bd",
+      "name": "Google Sheets Logger (3)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        370
+      ],
+      "parameters": {
+        "operation": "append",
+        "sheetName": "Logs",
+        "dataMode": "autoMapInputData"
+      },
+      "notes": "Automated enterprise step 3 for CustomerSupport workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "e58384ab-f504-45c3-b4b8-7bf81315b8bf",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        260
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for CustomerSupport workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Typeformtrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Logger (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

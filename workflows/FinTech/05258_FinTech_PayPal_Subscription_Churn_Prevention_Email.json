@@ -1,0 +1,102 @@
+{
+  "id": "wflow_49fda72766",
+  "name": "PayPal Subscription Churn Prevention Email - Enterprise Suite #5258",
+  "meta": {
+    "instanceId": "inst-66914c4c",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:35.965968+00:00",
+    "updatedAt": "2026-08-14T17:32:35.965968+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "fintech",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "fintech",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "58f3f372-427f-4f67-84ba-0a0599afc4c4",
+      "name": "Paypaltrigger (1)",
+      "type": "n8n-nodes-base.paypalTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        285
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "2f66d9d3-a31e-4480-95d8-7d3e223db098",
+      "name": "HubSpot CRM Sync (2)",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        500,
+        330
+      ],
+      "parameters": {
+        "resource": "contact",
+        "operation": "createOrUpdate"
+      },
+      "notes": "Automated enterprise step 2 for FinTech workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b2677025-4e8f-4612-ac2e-7f33d03ed608",
+      "name": "SMTP Email Dispatcher (3)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        760,
+        295
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 3 for FinTech workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Paypaltrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HubSpot CRM Sync (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot CRM Sync (2)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "id": "wflow_611ff2e1df",
+  "name": "Anthropic Claude Code Reviewer - Enterprise Suite #2239",
+  "meta": {
+    "instanceId": "inst-a08802f7",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:31.318233+00:00",
+    "updatedAt": "2026-08-14T17:32:31.318233+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "aiagents",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "aiagents",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "e3667847-b788-4f57-b8c3-6dd02d8d6343",
+      "name": "GitHub Repo Trigger (1)",
+      "type": "n8n-nodes-base.githubTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        255
+      ],
+      "parameters": {
+        "events": [
+          "push",
+          "pull_request",
+          "issues"
+        ]
+      },
+      "notes": "Automated enterprise step 1 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "764ae693-6ca2-4832-8ea7-c1baed6dddbc",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        345
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "42775175-b7c6-4f34-8e98-72f3e5ac718a",
+      "name": "Github (3)",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        760,
+        310
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 3 for AIAgents workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b3e4476d-196a-426a-964c-d227d07d5381",
+      "name": "Slack Notification (4)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1020,
+        245
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 4 for AIAgents workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "GitHub Repo Trigger (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "Github (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github (3)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

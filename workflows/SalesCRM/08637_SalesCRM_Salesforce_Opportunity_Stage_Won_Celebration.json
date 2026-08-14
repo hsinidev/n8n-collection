@@ -1,0 +1,129 @@
+{
+  "id": "wflow_4f9bb88764",
+  "name": "Salesforce Opportunity Stage Won Celebration - Enterprise Suite #8637",
+  "meta": {
+    "instanceId": "inst-f51fa6c9",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:43.589821+00:00",
+    "updatedAt": "2026-08-14T17:32:43.589821+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "salescrm",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "salescrm",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "d1e02d59-790a-47cd-b210-27183ebc07a2",
+      "name": "Salesforcetrigger (1)",
+      "type": "n8n-nodes-base.salesforceTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        270
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 1 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "d6e3033f-6c40-4733-a6d3-336e6144da3e",
+      "name": "Slack Notification (2)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        245
+      ],
+      "parameters": {
+        "channel": "automation-alerts",
+        "text": "=\u26a1 Enterprise Event Executed: {{ $json.event || 'Success' }}"
+      },
+      "notes": "Automated enterprise step 2 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "585e254b-adbd-4038-b3a3-46c27d8f3e59",
+      "name": "Google Sheets Logger (3)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        760,
+        255
+      ],
+      "parameters": {
+        "operation": "append",
+        "sheetName": "Logs",
+        "dataMode": "autoMapInputData"
+      },
+      "notes": "Automated enterprise step 3 for SalesCRM workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "2339b23c-5d3f-43cd-8519-54af3a684efb",
+      "name": "SMTP Email Dispatcher (4)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        295
+      ],
+      "parameters": {
+        "fromEmail": "notifications@hsini.dev",
+        "toEmail": "=admin@hsini.dev",
+        "subject": "=Alert: {{ $json.title || 'Enterprise Notification' }}"
+      },
+      "notes": "Automated enterprise step 4 for SalesCRM workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Salesforcetrigger (1)": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification (2)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Logger (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Logger (3)": {
+      "main": [
+        [
+          {
+            "node": "SMTP Email Dispatcher (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

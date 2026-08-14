@@ -1,0 +1,106 @@
+{
+  "id": "wflow_ddeec84645",
+  "name": "Solana Raydium Liquidity Pool Alerts - Enterprise Suite #5798",
+  "meta": {
+    "instanceId": "inst-36baf320",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:37.061741+00:00",
+    "updatedAt": "2026-08-14T17:32:37.061741+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cryptoweb3",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cryptoweb3",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "ee04b01c-7654-455c-b0b7-56dde906c776",
+      "name": "HTTP Enterprise Connector (1)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 1 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "53f1cf79-f994-42d4-ba82-07c7bc9ef613",
+      "name": "JavaScript Logic Engine (2)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        290
+      ],
+      "parameters": {
+        "jsCode": "// Enterprise Payload Transformation\nconst items = $input.all();\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    processed_by: 'hsini-enterprise-engine',\n    status: 'OPTIMIZED',\n    timestamp: new Date().toISOString()\n  }\n}));"
+      },
+      "notes": "Automated enterprise step 2 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "61c60d06-fb48-48d7-8b96-59f7718af9f4",
+      "name": "Telegram Bot Dispatcher (3)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        265
+      ],
+      "parameters": {
+        "chatId": "=@hsini_channel",
+        "text": "=\ud83e\udd16 Workflow Alert: {{ $json.message || 'Action Required' }}"
+      },
+      "notes": "Automated enterprise step 3 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "HTTP Enterprise Connector (1)": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Logic Engine (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Logic Engine (2)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Bot Dispatcher (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

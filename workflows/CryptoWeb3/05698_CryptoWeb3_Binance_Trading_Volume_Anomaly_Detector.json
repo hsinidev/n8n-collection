@@ -1,0 +1,146 @@
+{
+  "id": "wflow_442736e6bb",
+  "name": "Binance Trading Volume Anomaly Detector - Enterprise Suite #5698",
+  "meta": {
+    "instanceId": "inst-abe1f70d",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:32:36.847725+00:00",
+    "updatedAt": "2026-08-14T17:32:36.847725+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "cryptoweb3",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "cryptoweb3",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "082c35fe-1964-4272-90e0-0d321b8d8670",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        250
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "a6fefca4-4cc6-4df4-8b84-6411ed2f71f5",
+      "name": "HTTP Enterprise Connector (2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        255
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 2 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b6e874e2-42f3-4f71-b718-910186890959",
+      "name": "OpenAI Reasoning Engine (3)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        760,
+        235
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 3 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "d8c2b359-ee50-4bda-a179-0a2170cb8bb6",
+      "name": "Discord Webhook Alert (4)",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        360
+      ],
+      "parameters": {
+        "content": "=\ud83d\udd14 Enterprise Notification: {{ $json.summary || 'Pipeline OK' }}"
+      },
+      "notes": "Automated enterprise step 4 for CryptoWeb3 workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Enterprise Connector (2)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "Discord Webhook Alert (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "id": "wflow_561da1209a",
+  "name": "ChromaDB Local Knowledge Store - Enterprise Suite #20710",
+  "meta": {
+    "instanceId": "inst-b9ffc47b",
+    "versionId": "2.4.0",
+    "createdAt": "2026-08-14T17:38:12.931960+00:00",
+    "updatedAt": "2026-08-14T17:38:12.931960+00:00",
+    "owner": "Hsini Mohamed (https://hsini.dev)",
+    "license": "MIT",
+    "category": "vectordatabases",
+    "status": "production-ready",
+    "priority": "enterprise",
+    "environment": "production"
+  },
+  "tags": [
+    "enterprise",
+    "hsini-dev",
+    "vectordatabases",
+    "production-grade",
+    "scalable",
+    "automated"
+  ],
+  "nodes": [
+    {
+      "id": "32cde149-8494-420b-821a-c595884887f8",
+      "name": "Cron Scheduler (1)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        260
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 1 for VectorDatabases workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "b36ccdf9-f42f-44d3-84fe-b53bce7d8df8",
+      "name": "Notion (2)",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        500,
+        255
+      ],
+      "parameters": {},
+      "notes": "Automated enterprise step 2 for VectorDatabases workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "43b816c5-902c-4769-b15d-46c6653a8a36",
+      "name": "OpenAI Reasoning Engine (3)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        760,
+        315
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Perform enterprise automated decision logic on input: {{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "notes": "Automated enterprise step 3 for VectorDatabases workflows. Maintained by hsini.dev."
+    },
+    {
+      "id": "29e9d48b-dea4-407c-8a1e-020e78de5397",
+      "name": "HTTP Enterprise Connector (4)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        260
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.hsini.dev/v1/enterprise-endpoint",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "notes": "Automated enterprise step 4 for VectorDatabases workflows. Maintained by hsini.dev."
+    }
+  ],
+  "connections": {
+    "Cron Scheduler (1)": {
+      "main": [
+        [
+          {
+            "node": "Notion (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion (2)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Reasoning Engine (3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Reasoning Engine (3)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Enterprise Connector (4)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

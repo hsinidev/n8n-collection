@@ -1,0 +1,169 @@
+version: '3.8'
+
+# ====================================================================
+#  Enterprise Multi-Worker Distributed Workstation & Production Cluster
+#  Author: Hsini Mohamed (https://hsini.dev | https://github.com/hsinidev)
+# ====================================================================
+
+volumes:
+  caddy_data:
+  caddy_config:
+  db_storage:
+  redis_data:
+  n8n_storage:
+
+networks:
+  n8n_network:
+    driver: bridge
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - n8n_network
+    depends_on:
+      - n8n-main
+      - n8n-webhook
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-n8n}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-n8n_enterprise_pass}
+      - POSTGRES_DB=${POSTGRES_DB:-n8n}
+      - POSTGRES_MAX_CONNECTIONS=200
+      - POSTGRES_SHARED_BUFFERS=512MB
+    volumes:
+      - db_storage:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U ${POSTGRES_USER:-n8n} -d ${POSTGRES_DB:-n8n}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_enterprise_pass}
+    volumes:
+      - redis_data:/data
+    networks:
+      - n8n_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_enterprise_pass}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Primary Editor & Orchestrator
+  n8n-main:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-n8n_enterprise_pass}
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-redis_enterprise_pass}
+      - N8N_HOST=${DOMAIN_NAME:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-https}
+      - WEBHOOK_URL=${WEBHOOK_URL:-https://${DOMAIN_NAME:-localhost}/}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+      - N8N_METRICS=true
+      - N8N_LOG_LEVEL=info
+      - NODE_FUNCTION_ALLOW_BUILTIN=*
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./workflows:/home/node/workflows:ro
+    networks:
+      - n8n_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Dedicated Scalable Execution Worker
+  n8n-worker:
+    image: docker.n8n.io/n8nio/n8n:latest
+    command: worker --concurrency=${WORKER_CONCURRENCY:-10}
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-n8n_enterprise_pass}
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-redis_enterprise_pass}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+      - NODE_FUNCTION_ALLOW_BUILTIN=*
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./workflows:/home/node/workflows:ro
+    networks:
+      - n8n_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # High-Throughput Webhook Ingestion Engine
+  n8n-webhook:
+    image: docker.n8n.io/n8nio/n8n:latest
+    command: webhook
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-n8n_enterprise_pass}
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-redis_enterprise_pass}
+      - N8N_HOST=${DOMAIN_NAME:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-https}
+      - WEBHOOK_URL=${WEBHOOK_URL:-https://${DOMAIN_NAME:-localhost}/}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+    volumes:
+      - n8n_storage:/home/node/.n8n
+    networks:
+      - n8n_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

@@ -1,0 +1,35 @@
+{
+    # Check Caddy documentation for custom certificate and TLS settings
+    # email your-email@hsini.dev
+}
+
+{$DOMAIN_NAME:localhost} {
+    # Compress responses for maximum speed
+    encode gzip zstd
+
+    # High performance security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    # Route webhooks directly to webhook workers if in enterprise cluster mode
+    @webhook path /webhook/* /webhook-test/*
+    handle @webhook {
+        reverse_proxy n8n-webhook:5678 {
+            lb_policy round_robin
+            fail_duration 5s
+            max_fails 3
+        }
+    }
+
+    # Default route to main n8n instance
+    handle {
+        reverse_proxy n8n:5678 {
+            fail_duration 5s
+            max_fails 3
+        }
+    }
+}

@@ -1,15 +1,15 @@
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,5,30&height=180&section=header&text=N8n%20Collection&fontSize=42&fontColor=fff&animation=fadeIn&fontAlignY=38" width="100%" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;" alt="N8n Collection Header Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,2,5,30&height=180&section=header&text=n8n%20Workflow%20Automat&fontSize=40&fontColor=fff&animation=fadeIn&fontAlignY=38" width="100%" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;" alt="n8n Workflow Automation Collection Header Banner" />
 
-  <h1>🚀 N8n Collection</h1>
-  <p><em>Modern, High-Performance .NET 10 / WPF Solution & Developer Suite</em></p>
+  <h1>🚀 n8n Workflow Automation Collection</h1>
+  <p><strong>Curated Production-Grade n8n AI Agent Blueprints, Webhooks & Enterprise Pipelines</strong></p>
 
   <p align="center">
     <a href="https://hsini.dev"><img src="https://img.shields.io/badge/Architect-Hsini%20Mohamed-0055ff?style=for-the-badge&logo=github&logoColor=white" alt="Architect: Hsini Mohamed" /></a>
-    <a href="https://hsini.dev"><img src="https://img.shields.io/badge/Portfolio-hsini.dev-00c853?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio: hsini.dev" /></a>
-    <a href="https://github.com/hsinidev"><img src="https://img.shields.io/badge/Language-C%23-512BD4?style=for-the-badge" alt="Language: C#" /></a>
-    <a href="https://github.com/hsinidev"><img src="https://img.shields.io/badge/Framework-.NET%2010%20/%20WPF-6366f1?style=for-the-badge" alt="Framework: .NET 10 / WPF" /></a>
+    <a href="https://hsini.dev"><img src="https://img.shields.io/badge/Portfolio-hsini.dev-00c853?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio" /></a>
+    <a href="https://github.com/hsinidev"><img src="https://img.shields.io/badge/Language-JSON%20/%20TypeScript-FF6D5A?style=for-the-badge" alt="Language: JSON / TypeScript" /></a>
+    <a href="https://github.com/hsinidev"><img src="https://img.shields.io/badge/Framework-n8n%20Automation%20Nodes-6366f1?style=for-the-badge" alt="Framework: n8n Automation Nodes" /></a>
     <a href="https://github.com/hsinidev/n8n-collection"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT" /></a>
   </p>
 
@@ -19,21 +19,21 @@
 
 ## 🌟 Executive Overview
 
-**N8n Collection** is a production-grade **C#** platform engineered for high reliability, clean architectural separation, and frictionless developer workflow.
+**n8n Workflow Automation Collection** is a curated repository of production-ready, battle-tested n8n automation blueprints covering autonomous AI agent workflows, multi-channel webhook dispatchers, CRM sync pipelines, and database ETL routines.
 
 ## ⚡ Key Highlights & Capabilities
 
-- **Scalable Architecture**: Modular, decoupled components adhering to clean code principles.
-- **Optimized Runtime**: Ultra-fast execution with minimal memory and CPU overhead.
-- **Developer Tooling**: Standardized linting, formatting, and rapid local iteration setup.
-- **Production Ready**: Built-in error resilience, validation, and structured logging.
+- **Autonomous AI Agent Nodes**: LangChain, OpenAI, and Ollama integration workflows with tool calling.
+- **Enterprise Integrations**: Ready-to-import blueprints for Slack, Telegram, PostgreSQL, Airtable, and Stripe.
+- **Self-Healing Error Routing**: Automated alert dispatch and retry queues for failed executions.
+- **1-Click Import**: Standard JSON definitions ready for immediate copy-pasting into any self-hosted n8n instance.
 
 ---
 
 ## 🏗️ Architecture & Technology Stack
 
-- **Primary Language**: `C#`
-- **Framework / Runtime**: `.NET 10 / WPF`
+- **Primary Language**: `JSON / TypeScript`
+- **Framework / Runtime**: `n8n Automation Nodes`
 - **Design Pattern**: Modular Clean Architecture / Domain-Driven Design
 - **License**: MIT Open Source Attribution
 
@@ -47,12 +47,12 @@ cd n8n-collection
 
 ### 2. Install Dependencies
 ```bash
-dotnet restore
+npm install -g n8n
 ```
 
 ### 3. Launch the Application
 ```bash
-dotnet run
+n8n start
 ```
 
 

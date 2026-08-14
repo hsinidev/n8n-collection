@@ -1,31 +1,60 @@
+<div align="center">
+# 🚀 N8n Collection
+### *Modern, High-Performance .NET 10 / WPF Solution & Developer Suite*
+
+<p align="center">
+  [![Architect](https://img.shields.io/badge/Architect-Hsini%20Mohamed-0055ff?style=for-the-badge&logo=github&logoColor=white)](https://hsini.dev)
+  [![Portfolio](https://img.shields.io/badge/Portfolio-hsini.dev-00c853?style=for-the-badge&logo=google-chrome&logoColor=white)](https://hsini.dev)
+  [![Language](https://img.shields.io/badge/Language-C#-512BD4?style=for-the-badge)](https://github.com/hsinidev)
+  [![Framework](https://img.shields.io/badge/Framework-.NET%2010%20/%20WPF-6366f1?style=for-the-badge)](https://github.com/hsinidev)
+  [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+</p>
+
+![n8n Enterprise Automation Banner](assets/images/hero_banner.jpg)
+
+</div>
+
+---
+## 🌟 Executive Overview
+
+**N8n Collection** is a production-grade **C#** platform engineered for high reliability, clean architectural separation, and frictionless developer workflow.
+
+## ⚡ Key Highlights & Capabilities
+
+- **Scalable Architecture**: Modular, decoupled components adhering to clean code principles.
+- **Optimized Runtime**: Ultra-fast execution with minimal memory and CPU overhead.
+- **Developer Tooling**: Standardized linting, formatting, and rapid local iteration setup.
+- **Production Ready**: Built-in error resilience, validation, and structured logging.
+
+---
+## 🏗️ Architecture & Technology Stack
+
+- **Primary Language**: `C#`
+- **Framework / Runtime**: `.NET 10 / WPF`
+- **Design Pattern**: Modular Clean Architecture / Domain-Driven Design
+- **License**: MIT Open Source Attribution
+
+## 📖 Deep-Dive Technical Documentation
+
 # ⚡ Enterprise n8n Workstation & Global Workflow Repository
 
 <div align="center">
 
 ![n8n Enterprise Automation Banner](assets/images/hero_banner.jpg)
 
-![n8n](https://img.shields.io/badge/n8n-Enterprise%20Workstation-ff6e5c?style=for-the-badge&logo=n8n)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-22%2C500%2B-success?style=for-the-badge)
-![Domains](https://img.shields.io/badge/Domains-205%20Categories-purple?style=for-the-badge)
-![Desktop GUI](https://img.shields.io/badge/Desktop%20GUI-.NET%20Standalone%20EXE-blueviolet?style=for-the-badge&logo=windows)
-![Docker](https://img.shields.io/badge/Docker-Enterprise%20Cluster-2496ED?style=for-the-badge&logo=docker)
 
 **The most comprehensive, production-ready enterprise collection of 22,500+ automation workflows, a standalone offline Desktop GUI search engine, and self-hosted n8n deployment kit covering all global technology and business domains.**
 
-Architected & Maintained by **[Hsini Mohamed](https://hsini.dev)** — *Lead Systems Architect & Full-Stack Developer*.
 
 </div>
 
 ---
 
-## 👨‍💻 Developer & Lead Architect Info
 
 <div align="center">
   <img src="assets/images/app_icon.jpg" width="100" height="100" alt="Hsini Dev Automation Icon" style="border-radius: 20px;" />
   <br/>
   <h3>HSINI MOHAMED</h3>
-  <p><b>Lead Systems Architect &amp; Full-Stack Developer · Morocco 🇲🇦</b></p>
 </div>
 
 | Detail | Contact / Link |
@@ -48,7 +77,6 @@ For users who want to search, preview visual architecture diagrams, and export w
 ### 👉 **[`N8nWorkflowHub.exe`](N8nWorkflowHub.exe)**
 
 - 📦 **100% Self-Contained & Portable**: All **22,500+ workflow JSON files** are pre-packaged and compressed directly inside the single binary executable.
-- 🎨 **Visual Architecture Canvas**: View real-time visual node graphs with interconnected flow lines, colored badges, and parameter cards just like Adobe, Figma, or n8n canvas.
 - ⚡ **Instant Offline Search**: Real-time debounced fuzzy search across workflow names, nodes, and categories with zero latency.
 - 📋 **One-Click Clipboard Copy**: Click **"Copy JSON"** and paste directly into any running n8n browser canvas (`Ctrl+V`).
 - 💾 **Download & Batch Export**: Export individual workflows or batch-export full categories into any target directory.
@@ -148,7 +176,6 @@ flowchart TD
 
 ---
 
-### 💻 Option 3: Local Developer Workstation
 *Instant local spin-up for testing workflows and local development.*
 
 1. **Start Services:**
@@ -188,17 +215,71 @@ docker compose exec n8n n8n import:workflow --separate --input=/home/node/workfl
 
 ---
 
-## 🤝 Contributing & License
 
 Contributions, new workflow templates, and improvements are welcome!
 1. Fork the repository.
 2. Place your workflow JSON in the appropriate category under `/workflows`.
 3. Submit a Pull Request.
 
-Distributed under the **MIT License**.
 
 ---
 
 **Crafted with ⚡ by [Hsini Mohamed](https://hsini.dev)**  
-*Full-Stack Developer & SaaS Architect · Morocco 🇲🇦*  
 *Portfolio: [hsini.dev](https://hsini.dev) | GitHub: [@hsinidev](https://github.com/hsinidev)*
+
+---
+## 🚀 Quick Start & Installation
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/hsinidev/n8n-collection.git
+cd n8n-collection
+```
+
+### 2. Install Dependencies
+```bash
+dotnet restore
+```
+
+### 3. Launch the Application
+```bash
+dotnet run
+```
+
+
+---
+
+## 👨‍💻 System Architect & Author
+
+<table align="center" style="border: none; background: transparent; width: 100%;">
+  <tr>
+    <td align="center" width="160" style="border: none; padding: 12px;">
+      <img src="https://avatars.githubusercontent.com/u/232697467?v=4" width="120" height="120" style="border-radius: 50%; box-shadow: 0 8px 24px rgba(99,102,241,0.3); border: 2.5px solid #6366f1;" alt="Hsini Mohamed" />
+      <br /><br />
+      <b>Hsini Mohamed</b><br />
+      <sub>Morocco 🇲🇦</sub>
+    </td>
+    <td style="border: none; padding: 12px; vertical-align: middle;">
+      <h3 style="margin-top: 0;">🚀 System Architect & Full-Stack Engineer</h3>
+      <p style="font-size: 0.95rem; line-height: 1.6; color: #475569;">
+        Specializing in high-performance autonomous AI systems, deterministic multi-agent swarms, enterprise cloud architecture, and modern full-stack engineering.
+      </p>
+      <p>
+        <a href="https://hsini.dev"><img src="https://img.shields.io/badge/Portfolio-hsini.dev-2563eb?style=flat-square&logo=google-chrome&logoColor=white" alt="Portfolio" /></a>
+        <a href="mailto:contact@hsini.dev"><img src="https://img.shields.io/badge/Email-contact@hsini.dev-ea4335?style=flat-square&logo=gmail&logoColor=white" alt="Email" /></a>
+        <a href="https://github.com/hsinidev"><img src="https://img.shields.io/badge/GitHub-@hsinidev-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" /></a>
+        <a href="https://linkedin.com/in/hsinidev/"><img src="https://img.shields.io/badge/LinkedIn-hsinidev-0077b5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
+      </p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 📄 License & Attribution
+
+This project is distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete terms.
+
+<div align="center">
+  <sub>⚡ Designed, architected, and maintained with engineering precision by <b><a href="https://hsini.dev">Hsini Mohamed</a></b>.</sub>
+</div>
